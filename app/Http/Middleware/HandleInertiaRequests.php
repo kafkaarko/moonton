@@ -36,4 +36,25 @@ class HandleInertiaRequests extends Middleware
             ],
         ];
     }
+
+    public static function middleware(): array
+    {
+        return [
+            // Middleware dengan alias, menggunakan Spatie Permission
+            'role_or_permission:manager|edit articles', // Menggunakan role atau permission
+            
+            // Gunakan middleware role dengan alias, hanya untuk metode 'index'
+            'role:author' => ['only' => ['index']],
+            
+            // Gunakan RoleMiddleware Spatie untuk role 'manager', kecuali untuk metode 'show'
+            \Spatie\Permission\Middleware\RoleMiddleware::class => ['except' => ['show']],
+            
+            // Gunakan PermissionMiddleware Spatie, hanya untuk metode 'destroy'
+            \Spatie\Permission\Middleware\PermissionMiddleware::class => ['only' => ['destroy']],
+            
+            // Daftarkan alias 'role' untuk RoleMiddleware
+            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+        ];
+    }
+    
 }
