@@ -1,3 +1,4 @@
+
 import Authenticated from "@/Layouts/Authenticated/Index";
 import Flickity from "react-flickity-component";
 import FeaturedMovie from "@/Components/FeaturedMovie";
@@ -11,7 +12,7 @@ export default function Dashboard() {
         groupCells: 1,
         wrapAround: false,
         pageDots: false,
-        prevNextButtons: false,
+        prevNextButtons: false, 
         draggable: ">1"
     };
 
