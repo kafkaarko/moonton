@@ -9,7 +9,7 @@ use Ramsey\Uuid\Type\Integer;
 
 
 
-Route::redirect('/','/prototype/login');
+Route::redirect('/','/login');
 
 
 Route::get('/dashboard', function () {
