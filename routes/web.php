@@ -7,13 +7,17 @@ use Spatie\Permission\Middleware\RoleMiddleware;
 use Inertia\Inertia;
 use Ramsey\Uuid\Type\Integer;
 use App\Http\Controllers\User\DashboardController;
+use App\Http\Controllers\User\MovieController;
 
 
 Route::redirect('/','/login');
 
-Route::middleware(['auth', RoleMiddleware::class . ':user'])->prefix('dashboard')->name('user.dashboard')->group(function() { 
+Route::middleware(['auth', RoleMiddleware::class . ':user'])->prefix('dashboard')->name('user.dashboard.')->group(function() { 
     Route::get('/', [DashboardController::class , 'index'])->name('index');
+
+    Route::get('movie/{movie:slug}',[MovieController::class, 'show'])->name('movie.show');
 });
+
 
 
 Route::middleware('auth')->group(function () {
