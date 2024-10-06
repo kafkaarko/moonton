@@ -4,7 +4,7 @@ export default function Index({auth,children}){
 return<>
     <div className="mx-auto max-w-screen hidden lg:block">
         {/* start:SIde bar */}
-        <Sidebar/>
+        <Sidebar auth={auth}/>
         {/* end:sidebar */}
 
         {/* start:content */}

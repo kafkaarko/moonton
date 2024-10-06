@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use Ramsey\Uuid\Type\Integer;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\MovieController;
+use App\Http\Controllers\User\SubscriptionPlanController;
 
 
 Route::redirect('/','/login');
@@ -16,6 +17,9 @@ Route::middleware(['auth', RoleMiddleware::class . ':user'])->prefix('dashboard'
     Route::get('/', [DashboardController::class , 'index'])->name('index');
 
     Route::get('movie/{movie:slug}',[MovieController::class, 'show'])->name('movie.show');
+
+    Route::get('subscription-plan' , [SubscriptionPlanController::class , 'index'])->name('subscriptionPlan.index');
+    Route::post('subscription-plan/{subscriptionPlan}/user-subscribe' , [SubscriptionPlanController::class , 'userSubscribe'])->name('subscriptionPlan.userSubscribe');
 });
 
 
