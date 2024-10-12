@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
+use function PHPUnit\Framework\lessThanOrEqual;
 
 class User extends Authenticatable
 {
@@ -33,6 +37,29 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+
+    public function getIsActiveAttribute()
+    {
+        $lastSubscription = $this->LastActiveUserSubscription()->first();
+    if (!$lastSubscription) {
+        return false;
+    }
+
+    $dateNow = Carbon::now();
+    $dataExpired =  Carbon::create($this->LastActiveUserSubscription()->expired_date());
+    
+    return $dateNow->lessThanOrEqualTo($dataExpired);
+    }
+
+    public function hasSubscription()
+    {
+        return $this->isActive;
+    }
+
+    public function LastActiveUserSubscription(): HasOne
+{
+    return $this->hasOne(UserSubscription::class)->where('payment_status', 'paid')->latest();
+}   
     /**
      * Get the attributes that should be cast.
      *
