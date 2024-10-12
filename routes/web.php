@@ -6,15 +6,25 @@ use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Middleware\RoleMiddleware;
 use Inertia\Inertia;
 use Ramsey\Uuid\Type\Integer;
+use App\Http\Controllers\User\DashboardController;
+use App\Http\Controllers\User\MovieController;
+use App\Http\Controllers\User\SubscriptionPlanController;
+use App\Http\Middleware\CheckUserSubscription;
 
 
+Route::redirect('/','/login');
 
-Route::redirect('/','/prototype/login');
+Route::middleware(['auth', RoleMiddleware::class . ':user'])->prefix('dashboard')->name('user.dashboard.')->group(function() { 
+    Route::get('/', [DashboardController::class , 'index'])->name('index');
+
+    Route::get('movie/{movie:slug}',[MovieController::class, 'show'])->name('movie.show')->middleware([CheckUserSubscription::class.":true"]);
+
+    Route::get('subscription-plan' , [SubscriptionPlanController::class , 'index'])->name('subscriptionPlan.index')->middleware([CheckUserSubscription::class.":false"]);
+
+    Route::post('subscription-plan/{subscriptionPlan}/user-subscribe' , [SubscriptionPlanController::class , 'userSubscribe'])->name('subscriptionPlan.userSubscribe')->middleware([CheckUserSubscription::class.":false"]);
+});
 
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
