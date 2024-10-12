@@ -40,18 +40,26 @@ class User extends Authenticatable
 
     public function getIsActiveAttribute()
     {
-        if(!$this->LastActiveUserSubscription){
-            return false;
-        }
-        $dateNow = Carbon::now();
-        $dataExpired =  Carbon::create($this->LastActiveUserSubscription->expired_date);
-        return $dateNow->lessThanOrEqualTo($dataExpired);
+        $lastSubscription = $this->LastActiveUserSubscription()->first();
+    if (!$lastSubscription) {
+        return false;
     }
 
-    public function LastActiveUserSubscription() : hasOne
-    {
-        return $this->hasOne(UserSubscription::class)->wherePayamentStatus('paid')->latest();
+    $dateNow = Carbon::now();
+    $dataExpired =  Carbon::create($this->LastActiveUserSubscription()->expired_date());
+    
+    return $dateNow->lessThanOrEqualTo($dataExpired);
     }
+
+    public function hasSubscription()
+    {
+        return $this->isActive;
+    }
+
+    public function LastActiveUserSubscription(): HasOne
+{
+    return $this->hasOne(UserSubscription::class)->where('payment_status', 'paid')->latest();
+}   
     /**
      * Get the attributes that should be cast.
      *
